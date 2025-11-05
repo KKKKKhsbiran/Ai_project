@@ -1,4 +1,3 @@
-# requirements.txt 의 내용
 streamlit
 pandas
 plotly
