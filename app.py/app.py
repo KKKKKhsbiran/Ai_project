@@ -7,6 +7,21 @@ import numpy as np
 import time
 from datetime import datetime
 
+st.subheader("🧠 AI 종합 분석 결과")
+
+# 1. 'ai_advice' 변수를 "먼저" 초기화합니다.
+#    (이게 st.pre 보다 앞에 있어야 합니다)
+if 'ai_advice' not in st.session_state:
+    st.session_state.ai_advice = "왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요."
+
+# 2. 버튼이 눌렸는지 "다음으로" 확인합니다.
+if run_button:
+    with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
+        ai_advice = get_systematic_comment(style, selected_stock, df)
+        st.session_state.ai_advice = ai_advice # 변수 업데이트
+
+# 3. "마지막에" 화면에 표시합니다. (오류가 났던 159번째 줄)
+st.pre(st.session_state.ai_advice)
 # ------------------------------
 # 📊 [데모] 데모용 가짜 데이터 생성 함수
 # ------------------------------
@@ -155,5 +170,6 @@ if run_button:
     with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
         ai_advice = get_systematic_comment(style, selected_stock, df)
         st.session_state.ai_advice = ai_advice
+
 
 st.pre(st.session_state.ai_advice)
