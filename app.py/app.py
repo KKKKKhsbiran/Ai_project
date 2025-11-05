@@ -32,6 +32,7 @@ def create_fake_data(symbols):
 # 🧠 데이터 분석 + AI 코멘트 함수
 # ------------------------------
 def get_systematic_comment(style, selected_stock, df):
+    # (함수 내용은 이전과 동일)
     valid_styles = ["공격적 투자", "안정적 투자", "방어적 투자"]
     if style not in valid_styles:
         return "‘공격적 투자’, ‘안정적 투자’, ‘방어적 투자’ 중 하나를 입력해주세요."
@@ -89,6 +90,7 @@ def get_systematic_comment(style, selected_stock, df):
 # 📈 Plotly 그래프 생성
 # ------------------------------
 def plot_stock(df, selected_symbols):
+    # (함수 내용은 이전과 동일)
     fig = go.Figure()
 
     if df is None or df.empty or not selected_symbols:
@@ -112,13 +114,13 @@ def plot_stock(df, selected_symbols):
 # 🌐 Streamlit 앱 구성 (Main)
 # ------------------------------
 
-# 1. 페이지 설정 (가장 먼저 실행)
+# 1. 페이지 설정
 st.set_page_config(layout="wide", page_title="AI 투자 어드바이저")
 
-# 2. 데이터 로드 (캐시)
+# 2. 데이터 로드
 df = create_fake_data(SYMBOLS)
 
-# 3. 사이드바 UI 구성 (✨ 'run_button'이 여기서 정의됩니다!)
+# 3. 사이드바 UI
 with st.sidebar:
     st.image("https://emojicdn.elk.sh/💹", width=80)
     st.title("AI 투자 어드바이저")
@@ -130,7 +132,6 @@ with st.sidebar:
     st.subheader("Step 2: 분석 종목 선택")
     selected_stock = st.selectbox("분석 종목", SYMBOLS, index=0, label_visibility="collapsed")
     
-    # 'run_button' 변수 생성
     run_button = st.button("AI 분석 실행", use_container_width=True, type="primary")
     st.markdown("---")
 
@@ -148,18 +149,17 @@ with st.sidebar:
 st.plotly_chart(plot_stock(df, selected_symbols), use_container_width=True)
 st.markdown("---")
 
-# 5. 메인 페이지 - AI 분석 결과 (✨ 여기가 수정된 최종 순서입니다!)
+# 5. 메인 페이지 - AI 분석 결과 (✨ 여기가 완전히 수정된 새 로직입니다!)
 st.subheader("🧠 AI 종합 분석 결과")
 
-# 5-1. 'ai_advice' 변수를 "먼저" 초기화 (AttributeError 방지)
-if 'ai_advice' not in st.session_state:
-    st.session_state.ai_advice = "왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요."
+# ✨ [수정] st.session_state를 아예 사용하지 않습니다.
+# 버튼이 눌렸는지 아닌지만 확인합니다.
 
-# 5-2. "다음으로" 버튼 클릭 확인 (NameError 방지)
 if run_button:
+    # 5-1. 버튼이 눌렸으면: AI 분석을 실행하고 결과를 표시
     with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
         ai_advice = get_systematic_comment(style, selected_stock, df)
-        st.session_state.ai_advice = ai_advice # 변수 업데이트
-
-# 5-3. "마지막에" 화면에 표시 (오류가 났던 그 라인)
-st.pre(st.session_state.ai_advice)
+        st.pre(ai_advice) # 결과를 바로 st.pre로 표시
+else:
+    # 5-2. 버튼이 안 눌렸으면 (페이지 첫 로드 포함): 기본 메시지를 표시
+    st.pre("왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요.")
