@@ -79,7 +79,7 @@ def get_systematic_comment(style, selected_stock, df):
             comment += f"  > {volatility_text}과 {momentum_text}을 보이고 있습니다. 현재 비중을 유지하며 시장 상황을 관망하는 것이 좋습니다."
     elif style == "방어적 투자":
         if volatility_text == "높은 변동성" or momentum_text == "강한 하락 모멘텀":
-            comment += f" N> 위험 신호({volatility_text}, {momentum_text})가 감지되었습니다. 방어적 투자 성향에 부적합하므로 비중 축소 또는 매도를 권고합니다."
+            comment += f"  > 위험 신호({volatility_text}, {momentum_text})가 감지되었습니다. 방어적 투자 성향에 부적합하므로 비중 축소 또는 매도를 권고합니다."
         else:
             comment += f"  > {volatility_text}과 {momentum_text}을 보이고 있습니다. 안정적인 자산 방어 수단으로 유효합니다."
 
@@ -148,18 +148,18 @@ with st.sidebar:
 st.plotly_chart(plot_stock(df, selected_symbols), use_container_width=True)
 st.markdown("---")
 
-# 5. 메인 페이지 - AI 분석 결과 (✨ 순서가 수정된 코드)
+# 5. 메인 페이지 - AI 분석 결과 (✨ 여기가 수정된 최종 순서입니다!)
 st.subheader("🧠 AI 종합 분석 결과")
 
-# 5-1. 'ai_advice' 변수를 "먼저" 초기화
+# 5-1. 'ai_advice' 변수를 "먼저" 초기화 (AttributeError 방지)
 if 'ai_advice' not in st.session_state:
     st.session_state.ai_advice = "왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요."
 
-# 5-2. "다음으로" 버튼 클릭 확인 (✨ 'run_button'을 사용하기 전에 3번에서 정의함)
+# 5-2. "다음으로" 버튼 클릭 확인 (NameError 방지)
 if run_button:
     with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
         ai_advice = get_systematic_comment(style, selected_stock, df)
         st.session_state.ai_advice = ai_advice # 변수 업데이트
 
-# 5-3. "마지막에" 화면에 표시
+# 5-3. "마지막에" 화면에 표시 (오류가 났던 그 라인)
 st.pre(st.session_state.ai_advice)
