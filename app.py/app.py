@@ -149,17 +149,16 @@ with st.sidebar:
 st.plotly_chart(plot_stock(df, selected_symbols), use_container_width=True)
 st.markdown("---")
 
-# 5. 메인 페이지 - AI 분석 결과 (✨ 여기가 완전히 수정된 새 로직입니다!)
+# 5. 메인 페이지 - AI 분석 결과 (✨ 'st.pre'를 'st.code'로 교체)
 st.subheader("🧠 AI 종합 분석 결과")
-
-# ✨ [수정] st.session_state를 아예 사용하지 않습니다.
-# 버튼이 눌렸는지 아닌지만 확인합니다.
 
 if run_button:
     # 5-1. 버튼이 눌렸으면: AI 분석을 실행하고 결과를 표시
     with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
         ai_advice = get_systematic_comment(style, selected_stock, df)
-        st.pre(ai_advice) # 결과를 바로 st.pre로 표시
+        # ✨ st.pre 대신 st.code 사용
+        st.code(ai_advice, language=None) 
 else:
     # 5-2. 버튼이 안 눌렸으면 (페이지 첫 로드 포함): 기본 메시지를 표시
-    st.pre("왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요.")
+    # ✨ st.pre 대신 st.code 사용
+    st.code("왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요.", language=None)
