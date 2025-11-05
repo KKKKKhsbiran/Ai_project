@@ -1,5 +1,3 @@
-# app.py 의 내용
-
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -7,21 +5,6 @@ import numpy as np
 import time
 from datetime import datetime
 
-st.subheader("🧠 AI 종합 분석 결과")
-
-# 1. 'ai_advice' 변수를 "먼저" 초기화합니다.
-#    (이게 st.pre 보다 앞에 있어야 합니다)
-if 'ai_advice' not in st.session_state:
-    st.session_state.ai_advice = "왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요."
-
-# 2. 버튼이 눌렸는지 "다음으로" 확인합니다.
-if run_button:
-    with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
-        ai_advice = get_systematic_comment(style, selected_stock, df)
-        st.session_state.ai_advice = ai_advice # 변수 업데이트
-
-# 3. "마지막에" 화면에 표시합니다. (오류가 났던 159번째 줄)
-st.pre(st.session_state.ai_advice)
 # ------------------------------
 # 📊 [데모] 데모용 가짜 데이터 생성 함수
 # ------------------------------
@@ -96,7 +79,7 @@ def get_systematic_comment(style, selected_stock, df):
             comment += f"  > {volatility_text}과 {momentum_text}을 보이고 있습니다. 현재 비중을 유지하며 시장 상황을 관망하는 것이 좋습니다."
     elif style == "방어적 투자":
         if volatility_text == "높은 변동성" or momentum_text == "강한 하락 모멘텀":
-            comment += f"  > 위험 신호({volatility_text}, {momentum_text})가 감지되었습니다. 방어적 투자 성향에 부적합하므로 비중 축소 또는 매도를 권고합니다."
+            comment += f" N> 위험 신호({volatility_text}, {momentum_text})가 감지되었습니다. 방어적 투자 성향에 부적합하므로 비중 축소 또는 매도를 권고합니다."
         else:
             comment += f"  > {volatility_text}과 {momentum_text}을 보이고 있습니다. 안정적인 자산 방어 수단으로 유효합니다."
 
@@ -129,10 +112,13 @@ def plot_stock(df, selected_symbols):
 # 🌐 Streamlit 앱 구성 (Main)
 # ------------------------------
 
+# 1. 페이지 설정 (가장 먼저 실행)
 st.set_page_config(layout="wide", page_title="AI 투자 어드바이저")
 
+# 2. 데이터 로드 (캐시)
 df = create_fake_data(SYMBOLS)
 
+# 3. 사이드바 UI 구성 (✨ 'run_button'이 여기서 정의됩니다!)
 with st.sidebar:
     st.image("https://emojicdn.elk.sh/💹", width=80)
     st.title("AI 투자 어드바이저")
@@ -144,6 +130,7 @@ with st.sidebar:
     st.subheader("Step 2: 분석 종목 선택")
     selected_stock = st.selectbox("분석 종목", SYMBOLS, index=0, label_visibility="collapsed")
     
+    # 'run_button' 변수 생성
     run_button = st.button("AI 분석 실행", use_container_width=True, type="primary")
     st.markdown("---")
 
@@ -157,19 +144,22 @@ with st.sidebar:
     
     st.info("ⓒ 2025 University Project (Demo)")
 
-# 메인 대시보드
+# 4. 메인 페이지 - 그래프
 st.plotly_chart(plot_stock(df, selected_symbols), use_container_width=True)
 st.markdown("---")
 
+# 5. 메인 페이지 - AI 분석 결과 (✨ 순서가 수정된 코드)
 st.subheader("🧠 AI 종합 분석 결과")
 
+# 5-1. 'ai_advice' 변수를 "먼저" 초기화
 if 'ai_advice' not in st.session_state:
     st.session_state.ai_advice = "왼쪽 패널에서 'AI 분석 실행' 버튼을 눌러주세요."
 
+# 5-2. "다음으로" 버튼 클릭 확인 (✨ 'run_button'을 사용하기 전에 3번에서 정의함)
 if run_button:
     with st.spinner(f"'{selected_stock}' 종목을 '{style}' 성향에 맞춰 분석 중..."):
         ai_advice = get_systematic_comment(style, selected_stock, df)
-        st.session_state.ai_advice = ai_advice
+        st.session_state.ai_advice = ai_advice # 변수 업데이트
 
-
+# 5-3. "마지막에" 화면에 표시
 st.pre(st.session_state.ai_advice)
